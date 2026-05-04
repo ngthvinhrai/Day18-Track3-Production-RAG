@@ -38,19 +38,19 @@ def summarize_chunk(text: str) -> str:
     Returns:
         Summary string (2-3 câu).
     """
-    # TODO: Implement chunk summarization
+    # Implement chunk summarization
     # Option A (với OpenAI):
-    #   from openai import OpenAI
-    #   client = OpenAI()
-    #   resp = client.chat.completions.create(
-    #       model="gpt-4o-mini",
-    #       messages=[
-    #           {"role": "system", "content": "Tóm tắt đoạn văn sau trong 2-3 câu ngắn gọn bằng tiếng Việt."},
-    #           {"role": "user", "content": text},
-    #       ],
-    #       max_tokens=150,
-    #   )
-    #   return resp.choices[0].message.content.strip()
+    from openai import OpenAI
+    client = OpenAI()
+    resp = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "Tóm tắt đoạn văn sau trong 2-3 câu ngắn gọn bằng tiếng Việt."},
+            {"role": "user", "content": text},
+        ],
+        max_tokens=150,
+    )
+    return resp.choices[0].message.content.strip()
     #
     # Option B (không cần API — extractive):
     #   sentences = text.split(". ")
@@ -73,19 +73,19 @@ def generate_hypothesis_questions(text: str, n_questions: int = 3) -> list[str]:
     Returns:
         List of question strings.
     """
-    # TODO: Implement hypothesis question generation
-    # 1. from openai import OpenAI
-    #    client = OpenAI()
-    # 2. resp = client.chat.completions.create(
-    #        model="gpt-4o-mini",
-    #        messages=[
-    #            {"role": "system", "content": f"Dựa trên đoạn văn, tạo {n_questions} câu hỏi mà đoạn văn có thể trả lời. Trả về mỗi câu hỏi trên 1 dòng."},
-    #            {"role": "user", "content": text},
-    #        ],
-    #        max_tokens=200,
-    #    )
-    # 3. questions = resp.choices[0].message.content.strip().split("\n")
-    # 4. return [q.strip().lstrip("0123456789.-) ") for q in questions if q.strip()]
+    # Implement hypothesis question generation
+    from openai import OpenAI
+    client = OpenAI()
+    resp = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": f"Dựa trên đoạn văn, tạo {n_questions} câu hỏi mà đoạn văn có thể trả lời. Trả về mỗi câu hỏi trên 1 dòng."},
+            {"role": "user", "content": text},
+        ],
+        max_tokens=200,
+    )
+    questions = resp.choices[0].message.content.strip().split("\n")
+    return [q.strip().lstrip("0123456789.-) ") for q in questions if q.strip()]
     #
     # Tại sao: User hỏi "nghỉ phép bao nhiêu ngày?" nhưng doc viết
     # "12 ngày làm việc mỗi năm" → vocabulary gap. HyQA bridge gap này
@@ -108,19 +108,19 @@ def contextual_prepend(text: str, document_title: str = "") -> str:
     Returns:
         Text với context prepended.
     """
-    # TODO: Implement contextual prepend
-    # 1. from openai import OpenAI
-    #    client = OpenAI()
-    # 2. resp = client.chat.completions.create(
-    #        model="gpt-4o-mini",
-    #        messages=[
-    #            {"role": "system", "content": "Viết 1 câu ngắn mô tả đoạn văn này nằm ở đâu trong tài liệu và nói về chủ đề gì. Chỉ trả về 1 câu."},
-    #            {"role": "user", "content": f"Tài liệu: {document_title}\n\nĐoạn văn:\n{text}"},
-    #        ],
-    #        max_tokens=80,
-    #    )
-    # 3. context = resp.choices[0].message.content.strip()
-    # 4. return f"{context}\n\n{text}"
+    # Implement contextual prepend
+    from openai import OpenAI
+    client = OpenAI()
+    resp = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "Viết 1 câu ngắn mô tả đoạn văn này nằm ở đâu trong tài liệu và nói về chủ đề gì. Chỉ trả về 1 câu."},
+            {"role": "user", "content": f"Tài liệu: {document_title}\n\nĐoạn văn:\n{text}"},
+        ],
+        max_tokens=80,
+    )
+    context = resp.choices[0].message.content.strip()
+    return f"{context}\n\n{text}"
     #
     # Ví dụ output:
     #   "Trích từ Chương 3 - Chính sách nghỉ phép, Sổ tay VinUni 2024.
@@ -141,19 +141,20 @@ def extract_metadata(text: str) -> dict:
     Returns:
         Dict with extracted metadata fields.
     """
-    # TODO: Implement auto metadata extraction
-    # 1. from openai import OpenAI
-    #    import json
-    #    client = OpenAI()
-    # 2. resp = client.chat.completions.create(
-    #        model="gpt-4o-mini",
-    #        messages=[
-    #            {"role": "system", "content": 'Trích xuất metadata từ đoạn văn. Trả về JSON: {"topic": "...", "entities": ["..."], "category": "policy|hr|it|finance", "language": "vi|en"}'},
-    #            {"role": "user", "content": text},
-    #        ],
-    #        max_tokens=150,
-    #    )
-    # 3. return json.loads(resp.choices[0].message.content)
+    # Implement auto metadata extraction
+    from openai import OpenAI
+    import json
+    client = OpenAI()
+    resp = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": 'Trích xuất metadata từ đoạn văn. CHỈ trả về JSON hợp lệ, KHÔNG giải thích, KHÔNG markdown: {"topic": "...", "entities": ["..."], "category": "policy|hr|it|finance", "language": "vi|en"}'},
+            {"role": "user", "content": text},
+        ],
+        max_tokens=150,
+    )
+
+    return json.loads(resp.choices[0].message.content)
     #
     # Metadata này gắn vào chunk → enable rich filtering khi search
     # VD: filter category="policy" + topic="nghỉ phép" → precision tăng
@@ -183,21 +184,20 @@ def enrich_chunks(
 
     enriched = []
 
-    # TODO: Implement enrichment pipeline
-    # For each chunk:
-    #   1. summary = summarize_chunk(chunk["text"]) if "summary" in methods or "full" in methods
-    #   2. questions = generate_hypothesis_questions(chunk["text"]) if "hyqa" in methods or "full" in methods
-    #   3. enriched_text = contextual_prepend(chunk["text"], chunk["metadata"].get("source", ""))
-    #      if "contextual" in methods or "full" in methods
-    #   4. auto_meta = extract_metadata(chunk["text"]) if "metadata" in methods or "full" in methods
-    #   5. Create EnrichedChunk(
-    #          original_text=chunk["text"],
-    #          enriched_text=enriched_text or chunk["text"],
-    #          summary=summary or "",
-    #          hypothesis_questions=questions or [],
-    #          auto_metadata={**chunk["metadata"], **auto_meta},
-    #          method="+".join(methods),
-    #      )
+    # Implement enrichment pipeline
+    for chunk in chunks:
+        summary = summarize_chunk(chunk["text"]) if "summary" in methods or "full" in methods else chunk["text"]
+        questions = generate_hypothesis_questions(chunk["text"]) if "hyqa" in methods or "full" in methods else chunk["text"]
+        enriched_text = contextual_prepend(chunk["text"], chunk["metadata"].get("source", "")) if "contextual" in methods or "full" in methods else chunk["text"]
+        auto_meta = extract_metadata(chunk["text"]) if "metadata" in methods or "full" in methods else chunk["text"]
+        enriched.append(EnrichedChunk(
+            original_text=chunk["text"],
+            enriched_text=enriched_text or chunk["text"],
+            summary=summary or "",
+            hypothesis_questions=questions or [],
+            auto_metadata={**chunk["metadata"], **auto_meta},
+            method="+".join(methods),
+        ))
     #
     # Lưu ý: Enrichment = one-time cost (offline). Dùng model rẻ (gpt-4o-mini).
     # ROI cao vì cải thiện MỌI query sau đó.

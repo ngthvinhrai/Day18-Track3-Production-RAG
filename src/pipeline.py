@@ -58,15 +58,15 @@ def run_query(query: str, search: HybridSearch, reranker: CrossEncoderReranker) 
     contexts = [r.text for r in reranked] if reranked else [r.text for r in results[:3]]
 
     # TODO (nhóm): Replace with LLM generation for better scores
-    # from openai import OpenAI
-    # client = OpenAI()
-    # context_str = "\n\n".join(contexts)
-    # resp = client.chat.completions.create(model="gpt-4o-mini", messages=[
-    #     {"role": "system", "content": "Trả lời CHỈ dựa trên context. Nếu không có → nói 'Không tìm thấy.'"},
-    #     {"role": "user", "content": f"Context:\n{context_str}\n\nCâu hỏi: {query}"},
-    # ])
-    # answer = resp.choices[0].message.content
-    answer = contexts[0] if contexts else "Không tìm thấy thông tin."
+    from openai import OpenAI
+    client = OpenAI()
+    context_str = "\n\n".join(contexts)
+    resp = client.chat.completions.create(model="gpt-4o-mini", messages=[
+        {"role": "system", "content": "Trả lời CHỈ dựa trên context. Nếu không có → nói 'Không tìm thấy.'"},
+        {"role": "user", "content": f"Context:\n{context_str}\n\nCâu hỏi: {query}"},
+    ])
+    answer = resp.choices[0].message.content
+    # answer = contexts[0] if contexts else "Không tìm thấy thông tin."
     return answer, contexts
 
 

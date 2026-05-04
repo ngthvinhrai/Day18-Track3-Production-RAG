@@ -18,12 +18,11 @@ class SearchResult:
 
 def segment_vietnamese(text: str) -> str:
     """Segment Vietnamese text into words."""
-    # TODO: Implement Vietnamese word segmentation
-    # 1. from underthesea import word_tokenize
-    # 2. return word_tokenize(text, format="text")
-    # Why: BM25 needs word boundaries. "nghỉ phép" = 1 word, not 2.
-    return text  # fallback
+    # Implement Vietnamese word segmentation
+    from underthesea import word_tokenize
+    return word_tokenize(text, format="text")
 
+from rank_bm25 import BM25Okapi
 
 class BM25Search:
     def __init__(self):
@@ -33,23 +32,49 @@ class BM25Search:
 
     def index(self, chunks: list[dict]) -> None:
         """Build BM25 index from chunks."""
-        # TODO: Implement BM25 indexing
-        # 1. self.documents = chunks
-        # 2. For each chunk: segment_vietnamese(chunk["text"]) → split by space
-        # 3. self.corpus_tokens = [tokenized list for each chunk]
-        # 4. from rank_bm25 import BM25Okapi
-        #    self.bm25 = BM25Okapi(self.corpus_tokens)
-        pass
+        self.documents = chunks
+        self.corpus_tokens = []
+
+        for chunk in chunks:
+            text = chunk["text"]
+            # Vietnamese segmentation → space-separated tokens
+            tokenized = segment_vietnamese(text).split()
+            self.corpus_tokens.append(tokenized)
+
+        self.bm25 = BM25Okapi(self.corpus_tokens)
 
     def search(self, query: str, top_k: int = BM25_TOP_K) -> list[SearchResult]:
         """Search using BM25."""
-        # TODO: Implement BM25 search
-        # 1. tokenized_query = segment_vietnamese(query).split()
-        # 2. scores = self.bm25.get_scores(tokenized_query)
-        # 3. top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:top_k]
-        # 4. Return [SearchResult(text=..., score=..., metadata=..., method="bm25")]
-        return []
+        if self.bm25 is None:
+            raise ValueError("BM25 index has not been built. Call index() first.")
 
+        tokenized_query = segment_vietnamese(query).split()
+        scores = self.bm25.get_scores(tokenized_query)
+
+        top_indices = sorted(
+            range(len(scores)),
+            key=lambda i: scores[i],
+            reverse=True,
+        )[:top_k]
+
+        results = []
+        for idx in top_indices:
+            chunk = self.documents[idx]
+            score = float(scores[idx])
+
+            results.append(
+                SearchResult(
+                    text=chunk["text"],
+                    score=score,
+                    metadata=chunk.get("metadata", {}),
+                    method="bm25",
+                )
+            )
+
+        return results
+
+
+from qdrant_client.models import Distance, VectorParams, PointStruct
 
 class DenseSearch:
     def __init__(self):
@@ -65,35 +90,133 @@ class DenseSearch:
 
     def index(self, chunks: list[dict], collection: str = COLLECTION_NAME) -> None:
         """Index chunks into Qdrant."""
-        # TODO: Implement dense indexing
-        # 1. from qdrant_client.models import Distance, VectorParams, PointStruct
-        # 2. self.client.recreate_collection(collection, VectorParams(size=EMBEDDING_DIM, distance=Distance.COSINE))
-        # 3. texts = [c["text"] for c in chunks]
-        # 4. vectors = self._get_encoder().encode(texts, show_progress_bar=True)
-        # 5. points = [PointStruct(id=i, vector=v.tolist(), payload={**c["metadata"], "text": c["text"]}) ...]
-        # 6. self.client.upsert(collection, points)
-        pass
+        # 1. Create or recreate collection
+        self.client.recreate_collection(
+            collection_name=collection,
+            vectors_config=VectorParams(
+                size=EMBEDDING_DIM,
+                distance=Distance.COSINE,
+            ),
+        )
 
-    def search(self, query: str, top_k: int = DENSE_TOP_K, collection: str = COLLECTION_NAME) -> list[SearchResult]:
+        if not chunks:
+            return
+
+        # 2. Encode texts
+        texts = [c["text"] for c in chunks]
+        embeddings = self._get_encoder().encode(
+            texts, show_progress_bar=True
+        )
+
+        # 3. Build points
+        points = []
+        for idx, (chunk, vector) in enumerate(zip(chunks, embeddings)):
+            payload = {
+                **chunk.get("metadata", {}),
+                "text": chunk["text"],
+            }
+
+            points.append(
+                PointStruct(
+                    id=idx,
+                    vector=vector.tolist(),
+                    payload=payload,
+                )
+            )
+
+        # 4. Upsert into Qdrant
+        self.client.upsert(
+            collection_name=collection,
+            points=points,
+        )
+
+    def search(
+        self,
+        query: str,
+        top_k: int = DENSE_TOP_K,
+        collection: str = COLLECTION_NAME,
+    ) -> list[SearchResult]:
         """Search using dense vectors."""
-        # TODO: Implement dense search
-        # 1. query_vector = self._get_encoder().encode(query).tolist()
-        # 2. hits = self.client.search(collection, query_vector, limit=top_k)
-        # 3. Return [SearchResult(text=hit.payload["text"], score=hit.score, metadata=hit.payload, method="dense")]
-        return []
+        query_vector = self._get_encoder().encode(query).tolist()
+
+        repsponse = self.client.query_points(
+            collection_name=collection,
+            query=query_vector,
+            limit=top_k,
+        )
+
+        hits = repsponse.points
+
+        results = []
+        for hit in hits:
+            payload = hit.payload
+            results.append(
+                SearchResult(
+                    text=payload.get("text", ""),
+                    score=float(hit.score),
+                    metadata=payload,
+                    method="dense",
+                )
+            )
 
 
-def reciprocal_rank_fusion(results_list: list[list[SearchResult]], k: int = 60,
-                           top_k: int = HYBRID_TOP_K) -> list[SearchResult]:
-    """Merge ranked lists using RRF: score(d) = Σ 1/(k + rank)."""
-    # TODO: Implement RRF
-    # 1. rrf_scores = {}  # text → {"score": float, "result": SearchResult}
-    # 2. For each result_list in results_list:
-    #      For rank, result in enumerate(result_list):
-    #        rrf_scores[result.text]["score"] += 1.0 / (k + rank + 1)
-    # 3. Sort by score descending
-    # 4. Return top_k SearchResult with method="hybrid"
-    return []
+        return results
+
+
+
+def reciprocal_rank_fusion(
+    results_list: list[list[SearchResult]],
+    k: int = 60,
+    top_k: int = HYBRID_TOP_K,
+) -> list[SearchResult]:
+    """
+    Merge ranked lists using Reciprocal Rank Fusion (RRF):
+        score(d) = sum_i 1 / (k + rank_i)
+
+    Args:
+        results_list: List of ranked result lists (BM25, Dense, ...)
+        k: RRF constant (larger k → smoother fusion)
+        top_k: Number of final results to return
+
+    Returns:
+        List of SearchResult with method="hybrid"
+    """
+    rrf_scores: dict[str, dict] = {}
+
+    # -------- 1. Accumulate RRF scores --------
+    for result_list in results_list:
+        for rank, result in enumerate(result_list):
+            key = result.text  # dùng text làm key (đơn giản & hiệu quả)
+
+            if key not in rrf_scores:
+                rrf_scores[key] = {
+                    "score": 0.0,
+                    "result": result,
+                }
+
+            rrf_scores[key]["score"] += 1.0 / (k + rank + 1)
+
+    # -------- 2. Sort by RRF score --------
+    fused = sorted(
+        rrf_scores.values(),
+        key=lambda x: x["score"],
+        reverse=True,
+    )
+
+    # -------- 3. Build final SearchResult list --------
+    final_results = []
+    for item in fused[:top_k]:
+        r = item["result"]
+        final_results.append(
+            SearchResult(
+                text=r.text,
+                score=item["score"],
+                metadata=r.metadata,
+                method="hybrid",
+            )
+        )
+
+    return final_results
 
 
 class HybridSearch:

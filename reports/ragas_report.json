@@ -1,0 +1,91 @@
+{
+  "aggregate": {
+    "faithfulness": 0.7166666666666667,
+    "answer_relevancy": 0.37236406711291237,
+    "context_precision": 0.7499999999566667,
+    "context_recall": 0.9
+  },
+  "num_questions": 10,
+  "failures": [
+    {
+      "question": "Theo Nghị định 13/2023/NĐ-CP (nguồn 2), dữ liệu cá nhân được chia thành những loại nào?",
+      "avg_score": 0.0,
+      "worst_metric": "faithfulness",
+      "score": 0.0,
+      "diagnosis": "LLM hallucinating",
+      "suggested_fix": "Tighten prompt, lower temperature, add citation grounding"
+    },
+    {
+      "question": "Nghị định 13/2023/NĐ-CP quy định thời hạn tối đa để thực hiện yêu cầu xóa dữ liệu của chủ thể dữ liệu là bao lâu?",
+      "avg_score": 0.49999999999166667,
+      "worst_metric": "faithfulness",
+      "score": 0.0,
+      "diagnosis": "LLM hallucinating",
+      "suggested_fix": "Tighten prompt, lower temperature, add citation grounding"
+    },
+    {
+      "question": "Trong Quý 4 năm 2024, tổng giá trị hàng hóa, dịch vụ mua vào (chưa có thuế) của Công ty DHA SURFACES là bao nhiêu?",
+      "avg_score": 0.6249999999875,
+      "worst_metric": "answer_relevancy",
+      "score": 0.0,
+      "diagnosis": "Answer does not match the question",
+      "suggested_fix": "Improve prompt template or question conditioning"
+    },
+    {
+      "question": "Chỉ tiêu [43] trên tờ khai thuế (nguồn 1) thể hiện số tiền bao nhiêu và có ý nghĩa gì?",
+      "avg_score": 0.726575243865954,
+      "worst_metric": "answer_relevancy",
+      "score": 0.4063009755138157,
+      "diagnosis": "Answer does not match the question",
+      "suggested_fix": "Improve prompt template or question conditioning"
+    },
+    {
+      "question": "Dựa trên Tờ khai thuế GTGT (nguồn 1), tên đơn vị nộp thuế và mã số thuế tương ứng là gì?",
+      "avg_score": 0.7314263608500541,
+      "worst_metric": "answer_relevancy",
+      "score": 0.4257054434502162,
+      "diagnosis": "Answer does not match the question",
+      "suggested_fix": "Improve prompt template or question conditioning"
+    },
+    {
+      "question": "Tổng doanh thu từ hàng hóa, dịch vụ bán ra chịu thuế suất 10% của công ty được ghi nhận tại chỉ tiêu nào và giá trị bao nhiêu?",
+      "avg_score": 0.7600588385952486,
+      "worst_metric": "faithfulness",
+      "score": 0.5,
+      "diagnosis": "LLM hallucinating",
+      "suggested_fix": "Tighten prompt, lower temperature, add citation grounding"
+    },
+    {
+      "question": "Việc xử lý dữ liệu cá nhân của trẻ em từ đủ 7 tuổi trở lên cần những điều kiện gì?",
+      "avg_score": 0.8215833561495219,
+      "worst_metric": "answer_relevancy",
+      "score": 0.6196667579647543,
+      "diagnosis": "Answer does not match the question",
+      "suggested_fix": "Improve prompt template or question conditioning"
+    },
+    {
+      "question": "Ai là người ký tên đại diện cho người nộp thuế trên tờ khai thuế GTGT ngày 24/01/2025?",
+      "avg_score": 0.8844612410865776,
+      "worst_metric": "answer_relevancy",
+      "score": 0.5378449644463106,
+      "diagnosis": "Answer does not match the question",
+      "suggested_fix": "Improve prompt template or question conditioning"
+    },
+    {
+      "question": "Trong trường hợp xảy ra vi phạm quy định bảo vệ dữ liệu cá nhân, Bên Kiểm soát dữ liệu phải thông báo cho Bộ Công an trong thời gian bao lâu?",
+      "avg_score": 0.8896420905280712,
+      "worst_metric": "answer_relevancy",
+      "score": 0.5585683621622849,
+      "diagnosis": "Answer does not match the question",
+      "suggested_fix": "Improve prompt template or question conditioning"
+    },
+    {
+      "question": "Cơ quan nào giữ vai trò là Cơ quan chuyên trách bảo vệ dữ liệu cá nhân theo Nghị định 13?",
+      "avg_score": 0.9088297032860204,
+      "worst_metric": "answer_relevancy",
+      "score": 0.6353188131774148,
+      "diagnosis": "Answer does not match the question",
+      "suggested_fix": "Improve prompt template or question conditioning"
+    }
+  ]
+}
