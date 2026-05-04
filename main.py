@@ -33,7 +33,7 @@ def main():
     search, reranker = build_pipeline()
     prod_results = evaluate_pipeline(search, reranker)
 
-    # Move reports to reports/
+    # # Move reports to reports/
     for f in ["ragas_report.json", "naive_baseline_report.json"]:
         if os.path.exists(f):
             os.rename(f, f"reports/{f}")

@@ -1,3 +1,42 @@
 [
-  {"question": "hihi cả nhà tự tạo testset bằng cơm nhé", "ground_truth": "Không kịp tạo luôn"},
+  {
+    "question": "Dựa trên Tờ khai thuế GTGT (nguồn 1), tên đơn vị nộp thuế và mã số thuế tương ứng là gì?",
+    "ground_truth": "Tên người nộp thuế là CÔNG TY CỔ PHẦN DHA SURFACES và mã số thuế là 0106769437."
+  },
+  {
+    "question": "Trong Quý 4 năm 2024, tổng giá trị hàng hóa, dịch vụ mua vào (chưa có thuế) của Công ty DHA SURFACES là bao nhiêu?",
+    "ground_truth": "Giá trị hàng hóa, dịch vụ mua vào trong kỳ là 2.405.743.241 đồng."
+  },
+  {
+    "question": "Chỉ tiêu [43] trên tờ khai thuế (nguồn 1) thể hiện số tiền bao nhiêu và có ý nghĩa gì?",
+    "ground_truth": "Chỉ tiêu [43] có giá trị là 0 đồng, thể hiện Thuế giá trị gia tăng còn được khấu trừ chuyển kỳ sau."
+  },
+  {
+    "question": "Tổng doanh thu từ hàng hóa, dịch vụ bán ra chịu thuế suất 10% của công ty được ghi nhận tại chỉ tiêu nào và giá trị bao nhiêu?",
+    "ground_truth": "Được ghi nhận tại chỉ tiêu [32] với giá trị là 3.703.695.610 đồng."
+  },
+  {
+    "question": "Ai là người ký tên đại diện cho người nộp thuế trên tờ khai thuế GTGT ngày 24/01/2025?",
+    "ground_truth": "Người ký tên là TRỊNH THỊ SANG."
+  },
+  {
+    "question": "Theo Nghị định 13/2023/NĐ-CP (nguồn 2), dữ liệu cá nhân được chia thành những loại nào?",
+    "ground_truth": "Dữ liệu cá nhân bao gồm dữ liệu cá nhân cơ bản và dữ liệu cá nhân nhạy cảm."
+  },
+  {
+    "question": "Nghị định 13/2023/NĐ-CP quy định thời hạn tối đa để thực hiện yêu cầu xóa dữ liệu của chủ thể dữ liệu là bao lâu?",
+    "ground_truth": "Việc xóa dữ liệu được thực hiện trong 72 giờ sau khi có yêu cầu của chủ thể dữ liệu, trừ trường hợp pháp luật có quy định khác."
+  },
+  {
+    "question": "Cơ quan nào giữ vai trò là Cơ quan chuyên trách bảo vệ dữ liệu cá nhân theo Nghị định 13?",
+    "ground_truth": "Cục An ninh mạng và phòng, chống tội phạm sử dụng công nghệ cao thuộc Bộ Công an."
+  },
+  {
+    "question": "Trong trường hợp xảy ra vi phạm quy định bảo vệ dữ liệu cá nhân, Bên Kiểm soát dữ liệu phải thông báo cho Bộ Công an trong thời gian bao lâu?",
+    "ground_truth": "Chậm nhất 72 giờ sau khi xảy ra hành vi vi phạm."
+  },
+  {
+    "question": "Việc xử lý dữ liệu cá nhân của trẻ em từ đủ 7 tuổi trở lên cần những điều kiện gì?",
+    "ground_truth": "Phải có sự đồng ý của trẻ em và sự đồng ý của cha, mẹ hoặc người giám hộ, trừ trường hợp khẩn cấp hoặc luật định khác."
+  }
 ]
